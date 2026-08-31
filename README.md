@@ -43,8 +43,8 @@ termux-setup-storage
 pkg install python git -y
 
 # 4. Clone repositori
-git clone https://github.com/nobody0x/spam-wa
-cd spam-wa
+git clone https://github.com/nbdy0x/spam-otp.git
+cd spam-otp
 
 # 5. Install dependencies
 pip install requests colorama
@@ -57,8 +57,8 @@ python main.py
 
 ```bash
 # 1. Clone repositori
-git clone https://github.com/nobody0x/spam-wa
-cd spam-wa
+git clone https://github.com/nbdy0x/spam-otp.git
+cd spam-otp
 
 # 2. Install dependencies
 pip install requests colorama
@@ -71,21 +71,53 @@ python main.py
 
 ## 🎮 Cara Pakai
 
-### Menu Utama
+### Full CLI (baru) — tanpa menu, langsung jalan
+```bash
+# Single round (default 1 thread)
+python main.py 085770274922
+python main.py 085770274922 -t 5
+python main.py +6285770274922 --threads 10
 
+# Infinite loop (delay 60s)
+python main.py 085770274922 -i
+python main.py 085770274922 -t 5 -i
+
+# Tanpa banner (untuk log/scan)
+python main.py 085770274922 --no-banner -t 5
+
+# Help
+python main.py --help
+
+# Untuk scanner/automation (wajib pakai workdir, jangan pakai cd)
+# workdir: /path/to/spam-otp
+# command: timeout 60 python3 main.py 085770274922 -t 5 --no-banner
+```
+
+| Flag | Deskripsi |
+|------|-----------|
+| `phone` (positional) | Nomor target `08xx` / `+62xx` / `62xx` |
+| `-t, --threads 1-10` | Jumlah thread (default 1, clamp 1-10) |
+| `-i, --infinite` | Loop terus delay 60s (tanpa ini = single round) |
+| `--no-banner` | Tanpa clear/banner, log bersih |
+| `-h, --help` | Bantuan |
+
+### Menu Interaktif (tanpa argumen)
+```bash
+python main.py
+```
 ```
 [1] Single Round   → Jalankan sekali ke semua API
 [2] Infinite Loop  → Loop terus menerus (delay 60 detik)
 [3] Keluar
 ```
 
-### Single Round
+### Single Round (interaktif)
 1. Pilih menu **1**
 2. Pilih jumlah **thread** (1-10, default 1)
 3. Masukkan **nomor target** (format `08xx` atau `+62xx`)
 4. Tools akan mengirim OTP ke semua API secara parallel
 
-### Infinite Loop
+### Infinite Loop (interaktif)
 1. Pilih menu **2**
 2. Masukkan **nomor target**
 3. Tools akan mengirim OTP terus menerus setiap 60 detik
@@ -110,7 +142,7 @@ Menjalankan semua API ke nomor target yang sudah di-set di dalam file.
 
 | File | Fungsi |
 |------|--------|
-| `main.py` | Entry point (menu interaktif) |
+| `main.py` | Entry point (CLI + menu interaktif) — `phone [-t 1-10] [-i] [--no-banner]` |
 | `main_engine.py` | Mesin utama (orchestrator) |
 | `handlers.py` | 24 fungsi handler OTP spesifik |
 | `targets.py` | 39 konfigurasi target API |
