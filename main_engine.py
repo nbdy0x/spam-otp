@@ -806,7 +806,7 @@ def process_target(api, target62, ip, idx, total):
     log_target(idx, total, name, status_text, detail)
     return success
 
-def run_single_round(threads=1):
+def run_single_round(threads=1, target=None):
     global stop_flag
     stop_flag = False
     
@@ -817,7 +817,7 @@ def run_single_round(threads=1):
     print(f"{Fore.CYAN}Memulai spam menggunakan {Fore.WHITE}{total_apis}{Fore.CYAN} API{Style.RESET_ALL}")
     print()
     
-    target62 = log_input("Nomor target (08xx / +62xx): ").strip()
+    target62 = target.strip() if target else log_input("Nomor target (08xx / +62xx): ").strip()
     
     if not target62:
         log_error("Nomor tidak boleh kosong!")
@@ -882,7 +882,7 @@ def run_single_round(threads=1):
     
     return success_count > 0
 
-def run_infinite_loop():
+def run_infinite_loop(target=None):
     global stop_flag
     stop_flag = False
     
@@ -892,7 +892,7 @@ def run_infinite_loop():
     print()
     
     log_info("Menjalankan Infinite Loop (delay 60 detik)...")
-    target62 = log_input("Nomor target (08xx / +62xx): ").strip()
+    target62 = target.strip() if target else log_input("Nomor target (08xx / +62xx): ").strip()
     
     if not target62:
         log_error("Nomor tidak boleh kosong!")

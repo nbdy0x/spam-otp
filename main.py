@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-# main.py - Spammer OTP WhatsApp (FREE VERSION)
+# main.py - Spammer OTP WhatsApp (FREE VERSION) - Full CLI + Interactive
 
 import sys
 import time
+import argparse
 import platform
 from datetime import datetime
 from colorama import Fore, Style
@@ -55,7 +56,37 @@ def show_thread_menu():
     print()
     return log_input("Pilih thread (1-10, enter untuk default 1): ").strip()
 
+def parse_cli():
+    p = argparse.ArgumentParser(
+        description=f"Spammer OTP WhatsApp v{VERSION} - 39 API | nobody0x.com",
+        epilog="contoh: python3 main.py 085770274922 -t 5 | python3 main.py 085770274922 -i | python3 main.py 085770274922 -t 5 -i"
+    )
+    p.add_argument("phone", nargs="?", help="nomor target 08xx / +62xx / 62xx")
+    p.add_argument("-t", "--threads", type=int, default=1, help="jumlah thread 1-10 (default:1)")
+    p.add_argument("-i", "--infinite", action="store_true", help="loop terus (delay 60s), tanpa ini = single round")
+    p.add_argument("--no-banner", action="store_true", help="tanpa banner/clear screen (untuk scan log)")
+    return p.parse_args()
+
 def main():
+    args = parse_cli()
+
+    # --- CLI MODE: jika phone diberikan via arg ---
+    if args.phone:
+        threads = max(1, min(10, args.threads))
+        # banner tetap tampil kecuali --no-banner
+        if not args.no_banner:
+            check_license()
+        else:
+            print(f"{Fore.CYAN}Spammer OTP WhatsApp v.{VERSION} | {threads} thread | {'infinite' if args.infinite else 'single'} mode{Style.RESET_ALL}")
+        if args.infinite:
+            from main_engine import run_infinite_loop
+            run_infinite_loop(target=args.phone)
+        else:
+            from main_engine import run_single_round
+            run_single_round(threads=threads, target=args.phone)
+        return
+
+    # --- INTERACTIVE MODE (tanpa arg) ---
     status, quota, device_id = check_license()
 
     while True:
